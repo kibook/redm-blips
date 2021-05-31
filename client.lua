@@ -104,7 +104,7 @@ end
 
 function AddTrainBlip(vehicle)
 	local blip = AddBlip(EntityBlips, vehicle, Config.TrainBlipSprite)
-	SetBlipNameFromPlayerString(blip, CreateVarString(10, 'LITERAL_STRING', 'Train'))
+	SetBlipNameFromPlayerString(blip, CreateVarString(10, "LITERAL_STRING", "Train"))
 end
 
 function IsTrain(entity)
@@ -186,24 +186,18 @@ function IsNearby(myPed, entity, distance)
 end
 
 function AddLocationBlip(location)
-	local sprite = location.sprite
-
-	if not sprite then
-		sprite = Config.LocationBlipSprite
-	end
-
-	local blip = BlipAddForCoord(1664425300, location.x, location.y, location.z)
-	SetBlipSprite(blip, sprite, true)
+	local blip = BlipAddForCoord(1664425300, location.coords)
+	SetBlipSprite(blip, location.sprite, true)
 
 	if blip then
-		SetBlipNameFromPlayerString(blip, CreateVarString(10, 'LITERAL_STRING', location.name))
+		SetBlipNameFromPlayerString(blip, CreateVarString(10, "LITERAL_STRING", location.name))
 		LocationBlips[blip] = location
 	end
 end
 
-exports('setPlayerBlipSprite', SetPlayerBlipSprite)
+exports("setPlayerBlipSprite", SetPlayerBlipSprite)
 
-AddEventHandler('onResourceStop', function()
+AddEventHandler("onResourceStop", function()
 	RemoveAllBlips()
 end)
 
