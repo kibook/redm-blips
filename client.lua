@@ -192,7 +192,8 @@ function AddLocationBlip(location)
 		sprite = Config.LocationBlipSprite
 	end
 
-	local blip = BlipAddForCoord(sprite, location.x, location.y, location.z)
+	local blip = BlipAddForCoord(1664425300, location.x, location.y, location.z)
+	SetBlipSprite(blip, sprite, true)
 
 	if blip then
 		SetBlipNameFromPlayerString(blip, CreateVarString(10, 'LITERAL_STRING', location.name))
@@ -206,13 +207,13 @@ AddEventHandler('onResourceStop', function()
 	RemoveAllBlips()
 end)
 
-CreateThread(function()
+Citizen.CreateThread(function()
 	for _, location in ipairs(Config.Locations) do
 		AddLocationBlip(location)
 	end
 end)
 
-CreateThread(function()
+Citizen.CreateThread(function()
 	while true do
 		Peds = {}
 		Vehicles = {}
@@ -225,13 +226,13 @@ CreateThread(function()
 			table.insert(Vehicles, veh)
 		end
 
-		Wait(1000)
+		Citizen.Wait(1000)
 	end
 end)
 
-CreateThread(function()
+Citizen.CreateThread(function()
 	while true do
 		UpdateBlips()
-		Wait(0)
+		Citizen.Wait(500)
 	end
 end)
