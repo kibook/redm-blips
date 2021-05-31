@@ -23,16 +23,6 @@ function SetBlipNameFromPlayerString(blip, playerString)
 	Citizen.InvokeNative(0x9CB1A1623062F402 , blip, playerString)
 end
 
-function SetPlayerBlipSprite(sprite)
-	if sprite then
-		PlayerBlipSprite = sprite
-	else
-		PlayerBlipSprite = Config.PlayerBlipSprite
-	end
-
-	RemoveAllBlips()
-end
-
 local entityEnumerator = {
 	__gc = function(enum)
 		if enum.destructor and enum.handle then
@@ -133,6 +123,16 @@ function AddBlipsForEntities()
 	end
 end
 
+function AddLocationBlip(location)
+	local blip = BlipAddForCoord(1664425300, location.coords)
+	SetBlipSprite(blip, location.sprite, true)
+
+	if blip then
+		SetBlipNameFromPlayerString(blip, CreateVarString(10, "LITERAL_STRING", location.name))
+		LocationBlips[blip] = location
+	end
+end
+
 function UpdateBlips()
 	for entity, blip in pairs(PlayerBlips) do
 		if not DoesEntityExist(entity) or not IsPedAPlayer(entity) or IsInvisiblePlayer(entity) then
@@ -157,21 +157,31 @@ function UpdateBlips()
 	AddBlipsForEntities()
 end
 
-function RemoveAllBlips()
+function RemoveAllPlayerBlips()
 	for entity, blip in pairs(PlayerBlips) do
 		RemoveBlip(blip)
 	end
 	PlayerBlips = {}
+end
 
+function RemoveAllEntityBlips()
 	for entity, blip in pairs(EntityBlips) do
 		RemoveBlip(blip)
 	end
 	EntityBlips = {}
+end
 
+function RemoveAllLocationBlips()
 	for blip, location in pairs(LocationBlips) do
 		RemoveBlip(blip)
 	end
 	LocationBlips = {}
+end
+
+function RemoveAllBlips()
+	RemoveAllPlayerBlips()
+	RemoveAllEntityBlips()
+	RemoveAllLocationBlips()
 end
 
 function IsNearby(myPed, entity, distance)
@@ -185,14 +195,14 @@ function IsNearby(myPed, entity, distance)
 	return #(myCoords.xy - entityCoords.xy) <= distance
 end
 
-function AddLocationBlip(location)
-	local blip = BlipAddForCoord(1664425300, location.coords)
-	SetBlipSprite(blip, location.sprite, true)
-
-	if blip then
-		SetBlipNameFromPlayerString(blip, CreateVarString(10, "LITERAL_STRING", location.name))
-		LocationBlips[blip] = location
+function SetPlayerBlipSprite(sprite)
+	if sprite then
+		PlayerBlipSprite = sprite
+	else
+		PlayerBlipSprite = Config.PlayerBlipSprite
 	end
+
+	RemoveAllPlayerBlips()
 end
 
 exports("setPlayerBlipSprite", SetPlayerBlipSprite)
