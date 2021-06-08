@@ -150,6 +150,7 @@ function UpdateBlips()
 
 	for blip, location in pairs(LocationBlips) do
 		if not DoesBlipExist(blip) then
+			LocationBlips[blip] = nil
 			AddLocationBlip(location)
 		end
 	end
@@ -207,8 +208,14 @@ end
 
 exports("setPlayerBlipSprite", SetPlayerBlipSprite)
 
-AddEventHandler("onResourceStop", function()
-	RemoveAllBlips()
+RegisterCommand("blips_debug", function(source, args, raw)
+	print(json.encode(LocationBlips))
+end, false)
+
+AddEventHandler("onResourceStop", function(resourceName)
+	if GetCurrentResourceName() == resourceName then
+		RemoveAllBlips()
+	end
 end)
 
 Citizen.CreateThread(function()
